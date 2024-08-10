@@ -1,7 +1,7 @@
 
 # CRM Application with Azure AI Integration
 
-This CRM application is similar to Salesforce's Einstein platform, leveraging Azure AI services to handle customer service queries efficiently. The application is designed for a payments gateway team within a bank and provides features like email processing, case management, AI-driven email drafting, and insights dashboards.
+This CRM application is the nextgen custmer service platform, leveraging Azure AI services to handle customer service queries efficiently. The application provides features like email processing, case management, AI-driven email drafting, and insights dashboards.
 
 ## Project Setup
 
