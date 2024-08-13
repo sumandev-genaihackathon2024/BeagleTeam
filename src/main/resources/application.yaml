@@ -1,0 +1,13 @@
+server:
+    port: 8081
+    servlet:
+        contextPath: /payments-genai-hackathon-pay-pros-backend/v1
+spring:
+    ai:
+        azure:
+            openai:
+                apiKey: <<API_KEY>>
+                endpoint: https://payprosoai4.openai.azure.com/
+                chat:
+                    options:
+                        deploymentName: PayProsOAIDeployment
