@@ -104,73 +104,36 @@ export default function CaseList() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <span style={{ fontSize: '14px', color: '#555555' }}>1 item • Updated a few seconds ago</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <input
-              type="text"
-              placeholder="Search this list..."
-              style={{
-                border: '1px solid #e0e0e0',
-                borderRadius: '6px',
-                padding: '8px',
-                fontSize: '14px',
-                outline: 'none'
-              }}
-            />
-            <i className="fas fa-cog" style={{ color: '#0070d2', fontSize: '18px' }}></i>
-            <i className="fas fa-th" style={{ color: '#0070d2', fontSize: '18px' }}></i>
-            <i className="fas fa-filter" style={{ color: '#0070d2', fontSize: '18px' }}></i>
-            <i className="fas fa-sync" style={{ color: '#0070d2', fontSize: '18px' }}></i>
-          </div>
-        </div>
-
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f4f6f9', borderBottom: '2px solid #e0e0e0' }}>
-              <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Case Number</th>
-              <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Subject</th>
-              <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Status</th>
-              <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Date/Time Opened</th>
-              <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Case Owner Alias</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <Link to="/case/00001026" style={{ color: '#0070d2', textDecoration: 'none', fontWeight: 'bold' }}>00001026</Link>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <i className="fas fa-lock" style={{ color: '#333333' }}></i>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>New</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>5/4/2024, 5:52 AM</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>Agent1</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <Link to="/case/00001027" style={{ color: '#0070d2', textDecoration: 'none', fontWeight: 'bold' }}>00001027</Link>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <i className="fas fa-lock" style={{ color: '#333333' }}></i>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>New</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>6/4/2024, 5:52 AM</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>Agent2</td>
-            </tr>
-            <tr>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <Link to="/case/00001028" style={{ color: '#0070d2', textDecoration: 'none', fontWeight: 'bold' }}>00001028</Link>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
-                <i className="fas fa-lock" style={{ color: '#333333' }}></i>
-              </td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>New</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>7/4/2024, 5:52 AM</td>
-              <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>Agent3</td>
-            </tr>
-          </tbody>
-        </table>
+        {loading ? (
+          <p>Loading cases...</p>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f4f6f9', borderBottom: '2px solid #e0e0e0' }}>
+                <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Case Number</th>
+                <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Subject</th>
+                <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Status</th>
+                <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Date/Time Opened</th>
+                <th style={{ padding: '12px 8px', textAlign: 'left', color: '#333333', fontSize: '14px' }}>Case Owner Alias</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cases.map((caseItem) => (
+                <tr key={caseItem.id}>
+                  <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>
+                    <Link to={`/case/${caseItem.id}`} style={{ color: '#0070d2', textDecoration: 'none', fontWeight: 'bold' }}>
+                      {caseItem.caseNumber}
+                    </Link>
+                  </td>
+                  <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>{caseItem.subject}</td>
+                  <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>{caseItem.status}</td>
+                  <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>{caseItem.dateOpened}</td>
+                  <td style={{ padding: '12px 8px', borderBottom: '1px solid #e0e0e0' }}>{caseItem.ownerAlias}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
