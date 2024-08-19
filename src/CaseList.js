@@ -1,8 +1,30 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function CaseList() {
   const [activeTab, setActiveTab] = useState('service');
+  const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Function to fetch case data from the backend API
+    const fetchCases = async () => {
+      try {
+        const response = await fetch('https://backend-springboot-automated-customer-communication.azuremicroservices.io/v1/cases');
+        const data = await response.json();
+        setCases(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching cases:', error);
+        setLoading(false);
+      }
+    };
+
+    console.log(cases)
+
+    fetchCases();
+  }, []);
 
   const renderSubMenu = () => {
     switch (activeTab) {
