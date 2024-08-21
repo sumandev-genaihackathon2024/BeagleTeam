@@ -11,3 +11,11 @@ spring:
                 chat:
                     options:
                         deploymentName: PayProsOAIDeployment
+
+azure:
+    storage:
+        connection-string: your-azure-storage-connection-string
+        container-name: your-container-name
+    document-intelligence:
+        api-url: https://document-ai1.cognitiveservices.azure.com/
+        api-key: 389f4231d5bc440abac9fdc10d96a5d1

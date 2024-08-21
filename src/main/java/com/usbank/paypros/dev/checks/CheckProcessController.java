@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.hc.core5.http.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,10 +21,13 @@ import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.util.polling.SyncPoller;
 
 @RestController
-public class CheckProcessingController {
+public class CheckProcessController {
 
-    private static final String AZURE_API_URL_PLAIN = "https://document-ai1.cognitiveservices.azure.com/";
-    private static final String AZURE_API_KEY = "389f4231d5bc440abac9fdc10d96a5d1";
+    @Value("${azure.document-intelligence.api-url}")
+    private String AZURE_API_URL;
+
+    @Value("${azure.document-intelligence.api-key}")
+    private String AZURE_API_KEY;
 
     @PostMapping("/process-check")
     public ResponseEntity<String> processCheck(@RequestBody String urlStr) {
@@ -46,7 +50,7 @@ public class CheckProcessingController {
 
         DocumentIntelligenceClient client = new DocumentIntelligenceClientBuilder()
                 .credential(new AzureKeyCredential(AZURE_API_KEY))
-                .endpoint(AZURE_API_URL_PLAIN)
+                .endpoint(AZURE_API_URL)
                 .buildClient();
 
         SyncPoller<AnalyzeResultOperation, AnalyzeResult> analyzeCheckPoller =
@@ -64,15 +68,14 @@ public class CheckProcessingController {
             // expect only one document for check image
             JsonObject fieldsJson = documentsJson.get(0).getAsJsonObject().get("fields").getAsJsonObject();
 
-            System.out.println("NumberAmount: " + fieldsJson.get("NumberAmount").toString());
             JsonElement numberAmountJson = fieldsJson.get("NumberAmount").getAsJsonObject().get("valueNumber");
             amount = numberAmountJson.getAsString();
 
-            JsonObject micrValueJson = fieldsJson.getAsJsonObject().get("MICR").getAsJsonObject().get("valueObject").getAsJsonObject();
+            JsonElement micrValueJsonElement = fieldsJson.getAsJsonObject().get("MICR").getAsJsonObject().get("valueObject");
 
-            if (micrValueJson == null) {
+            if (micrValueJsonElement == null) {
                 // handle the case where account number, routing number, and check number are not separated in MICR
-                JsonElement accountRoutingAndCheckNumberJson = micrValueJson.get("content");
+                JsonElement accountRoutingAndCheckNumberJson = fieldsJson.getAsJsonObject().get("MICR").getAsJsonObject().get("content");
                 String[] accountRoutingAndCheckNumber = accountRoutingAndCheckNumberJson.getAsString().split("\n");
                 if (accountRoutingAndCheckNumber.length >= 2) {
                     routingNumber = accountRoutingAndCheckNumber[0];
@@ -81,17 +84,17 @@ public class CheckProcessingController {
                     accountNumber = accountRoutingAndCheckNumber[0];
                 }
             } else {
+                JsonObject micrValueJsonObj = micrValueJsonElement.getAsJsonObject();
                 // handle the case where we have a well formated MICR
-                JsonElement accountNumberJson = micrValueJson.get("AccountNumber").getAsJsonObject().get("content");
+                JsonElement accountNumberJson = micrValueJsonObj.get("AccountNumber").getAsJsonObject().get("content");
                 accountNumber = accountNumberJson.getAsString();
 
-                JsonElement routingNumberJson = micrValueJson.get("RoutingNumber").getAsJsonObject().get("content");
+                JsonElement routingNumberJson = micrValueJsonObj.get("RoutingNumber").getAsJsonObject().get("content");
                 routingNumber = routingNumberJson.getAsString();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return "Account Number: " + accountNumber + ", Routing Number: " + routingNumber + ", Amount: " + amount;
     }
 
